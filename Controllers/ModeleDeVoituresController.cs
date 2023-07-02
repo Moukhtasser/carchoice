@@ -56,15 +56,24 @@ namespace testPFA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdModele,Marque,Modele,Annee")] ModeleDeVoiture modeleDeVoiture)
+        public async Task<IActionResult> Create(IFormFile file, [Bind("IdModele,Marque,Modele,Annee")] ModeleDeVoiture modeleDeVoiture)
         {
-            if (ModelState.IsValid)
+            if (file != null)
             {
-                _context.Add(modeleDeVoiture);
+                string filename = file.FileName;
+                //  string  ext = Path.GetExtension(file.FileName);
+                string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images"));
+                using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                { await file.CopyToAsync(filestream); }
+
+                modeleDeVoiture.img = filename;
+            }
+
+
+            _context.Add(modeleDeVoiture);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(modeleDeVoiture);
+           
         }
 
         // GET: ModeleDeVoitures/Edit/5
@@ -88,34 +97,23 @@ namespace testPFA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdModele,Marque,Modele,Annee")] ModeleDeVoiture modeleDeVoiture)
+        public async Task<IActionResult> Edit(IFormFile file ,int id, [Bind("IdModele,Marque,Modele,Annee,img")] ModeleDeVoiture modeleDeVoiture)
         {
-            if (id != modeleDeVoiture.IdModele)
+            if (file != null)
             {
-                return NotFound();
-            }
+                string filename = file.FileName;
+                //  string  ext = Path.GetExtension(file.FileName);
+                string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images"));
+                using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                { await file.CopyToAsync(filestream); }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(modeleDeVoiture);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ModeleDeVoitureExists(modeleDeVoiture.IdModele))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                modeleDeVoiture.img = filename;
             }
-            return View(modeleDeVoiture);
+            _context.Update(modeleDeVoiture);
+                    await _context.SaveChangesAsync();
+               
+                return RedirectToAction(nameof(Index));
+          
         }
 
         // GET: ModeleDeVoitures/Delete/5
