@@ -12,6 +12,7 @@ namespace testPFA.Models
         public List<Extra> Extras { get; set; }
         [ForeignKey("IdSaison")]
         public Saison Saison { get; set; }
+        public double PrixR { get; set; }
 
     }
 }

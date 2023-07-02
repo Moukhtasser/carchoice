@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using testPFA.Data;
 
@@ -10,9 +11,11 @@ using testPFA.Data;
 namespace testPFA.Migrations
 {
     [DbContext(typeof(YourDbContext))]
-    partial class YourDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230702164616_addd")]
+    partial class addd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
